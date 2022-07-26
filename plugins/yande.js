@@ -1,5 +1,5 @@
 module.exports = {
-	name: "r34",
+	name: "yande",
 	run: async (req, res) => {
 		try {
 			var _axios = require("axios");
