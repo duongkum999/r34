@@ -6,7 +6,7 @@ module.exports = {
 			var _cheerio = require("cheerio");
 			var	t = req.query.name;
 			if (t) {
-				var exemptJson = await _axios.get("https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&limit=1000&pid=0&tags=" + encodeURIComponent(t));
+				var exemptJson = await _axios.get("https://yande.re//post.xml?page=dapi&s=post&q=index&limit=1000&pid=0&tags" + encodeURIComponent(t));
 				var $ = _cheerio.load(exemptJson.data);
 				var posts = $("posts").find("post");
 				/** @type {!Array} */
