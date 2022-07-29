@@ -2,6 +2,7 @@ const axios = require("axios")
 module.exports = {
   name: "sauce",
   run: async (req, resp) => {
+    try{
     if (!req.query.url) return resp.json({ error: "Vui lòng nhập link url" })
     const res = await axios.post('https://saucenao.com/search.php', {
       api_key: 'ffcd095ae4c7f0ff0246d02682d6f3d89790b9b2',
@@ -22,5 +23,6 @@ module.exports = {
       data.push({thumbnail: img, url: url, title: title, member_name: member_name})
     }
     resp.json(data)
+    }catch(e) { resp.json({error : "Không tìm thấy ảnh này !" })}
   }
 }
