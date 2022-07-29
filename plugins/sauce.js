@@ -14,6 +14,7 @@ module.exports = {
         "Content-Type": "multipart/form-data",
       }
     })
+    console.log(res.data)
     const data = [];
     for(let i = 0; i < res.data.results.length; i++){
       var img = res.data.results[i].header.thumbnail
