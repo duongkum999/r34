@@ -9,10 +9,13 @@ module.exports = {
       const get = await axios.get(url);
       var post = get.data.post;
       var data = [];
+      var format = ["jpeg", "jpg", "png"];
       for(let a of post) {
-        data.push(a.file_url.replace(/\/\//g, '//').replace(/\//g, '/'));
+        for (let b of format) {
+          if (a.file_url.indexOf(b) !== -1) data.push(a.file_url.replace(/\/\//g, '//').replace(/\//g, '/'));
+        }
       }
-      return res.json(data);
+      return res.json({ count: data.length, data: data});
     } catch (error) { 
       return res.json({error : `${error}`});
     }
