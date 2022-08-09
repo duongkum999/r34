@@ -1,6 +1,6 @@
 const axios = require("axios");
 module.exports = {
-  name: "gelbooru",
+  name: "yandev2",
   run: async (req, res) => {
     var { search } = req.query;
     if(!search) return res.json({error : "Dcm vui lòng nhập từ khóa tìm kiếm!"});
