@@ -5,11 +5,12 @@ module.exports = {
     var { search } = req.query;
     if(!search) return res.json({error : "Dcm vui lòng nhập từ khóa tìm kiếm!"});
     try {
-      var url = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=" + encodeURI(search).replace("%20", "_");
+      var url = "https://gelbooru.com/index.php?page=dapi&s=post&q=index&json=1&tags=" + encodeURI(search.replace(/ /g, "_"));
       const get = await axios.get(url);
       var count = get.data['@attributes'].count;
       if (count == 0) return res.json({ count: 0, data: []});
       var data = [];
+	  
       function filter(allpost) {
         var format = ["jpeg", "jpg", "png"];
         for(let a of post) {
@@ -18,9 +19,10 @@ module.exports = {
           }
         }
       }
+
       if (count < 100) {
         var post = get.data.post;
-        filter(post)
+        filter(post);
         return res.json({ search: search, count: data.length, data: data});
       } else {
         var pageid = Math.floor(count/100);
