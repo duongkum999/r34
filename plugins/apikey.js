@@ -14,7 +14,7 @@ module.exports = {
       const get = (await axios.get(url)).data;
       if ('error' in get) return res.json({ count: 0, data: []});
       const endpoint = get.search_metadata.json_endpoint;
-      var check == 1;
+      var check = 1;
       var data = [];
       for( var image of get.images_results) { data.push(image.original); }
       await getlink(get.serpapi_pagination.next);
