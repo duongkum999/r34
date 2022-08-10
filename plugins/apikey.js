@@ -19,7 +19,7 @@ module.exports = {
       for( var image of get.images_results) { data.push(image.original); }
       await getlink(get.serpapi_pagination.next);
 
-      function getlink(urlpage) {
+       async function getlink(urlpage) {
         var getnextpage = (await axios.get(urlpage)).data;
         for(var image of getnextpage.images_results) { data.push(image.original); }
         if (urlpage !== endpoint && check < 11) {
