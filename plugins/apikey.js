@@ -16,12 +16,12 @@ module.exports = {
       const endpoint = get.search_metadata.json_endpoint;
       var check = 1;
       var data = [];
-      for( var image of get.images_results) { data.push(image..original); }
+      for( var image of get.images_results) { data.push(image.original); }
       await getlink(get.serpapi_pagination.next);
 
       function getlink(urlpage) {
         var getnextpage = (await axios.get(urlpage)).data;
-        for( let image of getnextpage.images_results) { data.push(image..original); }
+        for(var image of getnextpage.images_results) { data.push(image.original); }
         if (urlpage !== endpoint && check < 11) {
           check++;
           getlink(getnextpage.serpapi_pagination.next);
