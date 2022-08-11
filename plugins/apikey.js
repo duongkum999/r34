@@ -27,6 +27,7 @@ module.exports.run = async function(req, res, next) {
                 'url': array
             }
         });
+    }
     catch(error) {
         res.json({
             'status': false,
