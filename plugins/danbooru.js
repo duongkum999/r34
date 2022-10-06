@@ -1,55 +1,24 @@
-const mainAPI = 'https://serpapi.com/'
-const keyAPI = [
-    "8adb5ee609123e2289db00d46dbfb27a5a6977429d335eda308b899fe5acba2e",
-    "e7f4b31ecf50732878461b4453a2aa6c7a773cc68b60010506be80e3c8291969",
-    "803898902f62a7494ba00c3fede8fb622137b62d27e26b4dd50a703660add90c"
-];
-const axios = require('axios');
-module.exports.name = 'yandex';
-module.exports.run = async function(req, res, next) {
-    try {
-        const {
-            keyword,
-            limitedtab
-        } = req.query;
-        const limit = !!limitedtab == false ? 5: isNaN(limitedtab) ? 'NaN': isFinite(limitedtab) && limitedtab > 5 ? 5: limitedtab;
-        if (!keyword || keyword.length == 0) return res.json({
-            'status': false,
-            'error': `${!keyword ? `Không có truy vấn 'keyword'`: 'Không có từ khóa tìm kiếm'}`
-        });
-        if (!limitedtab || limit == 'NaN') return res.json({
-            'status': false,
-            'error': `${!limitedtab ? `Không có truy vấn 'limitedtab'`: `'${limitedtab}' Not Number`}`
-        });
-        var array = [];
-        for (var i = 0; i < (limitedtab || 5); i++) {
-            const get = (await axios.get(`${mainAPI}search.json?engine=yandex_images&p=${i}&text=${encodeURI(keyword)}&api_key=${keyAPI[rn(0, keyAPI.length)]}`)).data;
-            if ('error' in get) {
-                console.log(`[ ${this.name} ] -> ${get.error}`);
-                break;
-            };
-            const result = get.images_results;
-            for (var obj of result) {
-                const url = obj.original;
-                const lastURL = url.slice(+url.lastIndexOf('.')+1);
-                if (!['jpg', 'jpge', 'png'].includes(lastURL)) continue;
-                array.push(url);
-            };
-        };
-        res.json({
-            'status': true,
-            'result': {
-                'url': array
-            }
-        });
-    }
-    catch(error) {
-        res.json({
-            'status': false,
-            error
-        });
-    };
-};
-function rn(min, max) {
-    return Math.floor((Math.random()+min)*max)
-};
+const axios = require("axios")
+module.exports = {
+  name: "danbooru",
+  run: async (req, res) => {
+    var { query, limit } = req.query;
+    if(!query) return res.json({error : "Thiếu query"});
+    var gioihan = limit || "50"
+    axios({
+      method: 'get',
+      url: 'https://danbooru.donmai.us/posts.json?tags='+ encodeURI(query).replace("%20", "_") +'&z=5&limit=' + gioihan,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(async(body) =>{
+      var data = []
+      forEach(body.data, (element) =>{
+        var url = element.large_file_url;
+        var tags_string = element.tag_string;
+        var file_ext = element.file_ext;
+        data.push({url, tags_string, file_ext})
+      })
+      res.json(data)
+    })
+  }
