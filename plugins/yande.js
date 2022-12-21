@@ -1,39 +1,39 @@
+const axios = require("axios");
 module.exports = {
-	name: "yande",
-	run: async (req, res) => {
-		try {
-			var _axios = require("axios");
-			var _cheerio = require("cheerio");
-			var	t = req.query.name;
-			if (t) {
-				var exemptJson = await _axios.get("https://yande.re/post.xml?page=dapi&s=post&q=index&limit=1000&pid=0&tags=" + encodeURIComponent(t));
-				var $ = _cheerio.load(exemptJson.data);
-				var posts = $("posts").find("post");
-				/** @type {!Array} */
-				var self = [];
-				/** @type {number} */
-				var i = 0;
-				for (; i < posts.length; i++) {
-				  var fileUrl = $(posts[i]).attr("file_url");
-				  var type = $(posts[i]).attr("file_url").substring($(posts[i]).attr("file_url").lastIndexOf(".") + 1);
-				  var tagArr = $(posts[i]).attr("tags");
-				  var _preview_url = $(posts[i]).attr("preview_url");
-				  self.push({
-					tags : tagArr,
-					url : fileUrl,
-					preview_url : _preview_url,
-					type : type
-				  });
-				}
-				res.json(self)
-			} else res.json({
-				msg: "Invaild link"
-			})
-		} catch (e) {
-			console.log(e)
-			res.json({
-				msg: "Da xay ra loi"
-			})
-		}
-	}
+  name: "yande",
+  run: async (req, res) => {
+    var { search } = req.query;
+    if(!search) return res.json({error : "Dcm vui lòng nhập từ khóa tìm kiếm!"});
+    try {
+      var url = "https://yande.re/post.xml?page=dapi&s=post&q=index&limit=1000&pid=0&tags=" + encodeURI(search).replace(/%20/g, "_");
+      const get = await axios.get(url);
+      var count = get.data['@attributes'].count;
+      if (count == 0) return res.json({ count: 0, data: []});
+      var data = [];
+
+      function filter(allpost) {
+        var format = ["jpeg", "jpg", "png"];
+        for(let a of post) {
+          for (let b of format) {
+            if (a.file_url.indexOf(b) !== -1) data.push(a.file_url.replace(/\/\//g, '//').replace(/\//g, '/'));
+          }
+        }
+      }
+
+      if (count < 100) {
+        var post = get.data.post;
+        filter(post);
+        return res.json({ search: search, count: data.length, data: data});
+      } else {
+        var pageid = Math.floor(count/100);
+        pageid = pageid > 10 ? 10 : pageid;
+        for (let i = 1; i <= pageid; i++) {
+          var getall = await axios.get(url + "&pid=" + i);
+          var post = getall.data.post;
+          filter(post);
+        }
+        return res.json({ search: search, count: data.length, data: data});
+      }
+    } catch (error) { return res.json({error : `${error}`}); }
+  }
 };
