@@ -15,7 +15,7 @@ module.exports = {
             for (let i = 0; i < l; i++)try {
                 let danbooru = await axios({
                     method: 'get',
-                    url: 'https://danbooru.donmai.us/posts.json?tags='+ encodeURI(query).replace("%20", "_") +'&z=5&limit=200' +`page=b${((Math.random()*6068868 - 60686)+60688)<<0}`,
+                    url: 'https://danbooru.donmai.us/posts.json?tags='+ encodeURI(query).replace("%20", "_") +'&z=5&limit=200' +`page=b${((Math.random()*6068868)+606088)<<0}`,
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -26,11 +26,11 @@ module.exports = {
             };
             a(resolve);
         })
-        .then(data=>{
+        .then(data=> {
             let link = [];
-            let map = data.map($=>$.large_file_url);
-            
-            map.forEach($=>link.includes($)?'':link.push($));
+            let map = data.map($=>$.large_file_url).filter($=>!!$);
+
+            map.forEach($=>link.includes($)?'': link.push($));
             res.send({
                 count: link.length, data: link,
             })
