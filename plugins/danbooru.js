@@ -15,7 +15,7 @@ module.exports = {
             for (let i = 0; i < l; i++)try {
                 let danbooru = await axios({
                     method: 'get',
-                    url: 'https://danbooru.donmai.us/posts.json?tags='+ encodeURI(query).replace("%20", "_") +'&z=5&limit=200' +`page=b${((Math.random()*6068868)+606088)<<0}`,
+                    url: 'https://danbooru.donmai.us/posts.json?tags='+ encodeURI(query).replace("%20", "_") +'&z=5&limit=1000' +`page=b${((Math.random()*6068868)+606088)<<0}`,
                     headers: {
                         'Content-Type': 'application/json'
                     }
